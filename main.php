@@ -31,22 +31,30 @@ else $req = array('errorcatcher');
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-            if($req[0]=='Get'){
-                if($req[1]=='All'){echo json_encode($crud->getAll()); return;}
-                if($req[1]== 'One'){echo json_encode($crud->getOne($data)); return;}
-            }
+        if($req[0]=='Get'){
+            if($req[1]=='All'){echo json_encode($crud->getAll()); return;}
+            if($req[1]== 'One'){echo json_encode($crud->getOne($data)); return;}
+        }
+        echo json_encode(["Message"=>"Endpoint is none existant"]);
+        http_response_code(403);
         break;
 
     case 'POST':
         if($req[0] == 'Insert'){echo json_encode($crud->insert($data)); return;}
+        echo json_encode(["Message"=>"Endpoint is none existant"]);
+        http_response_code(403);
         break;
 
     case 'PUT':
         if($req[0]== 'Update'){echo json_encode($crud->update($data)); return;}
+        echo json_encode(["Message"=>"Endpoint is none existant"]);
+        http_response_code(403);
         break;
 
     case 'DELETE':
         if($req[0]== 'Remove'){echo json_encode($crud->delete($data)); return;}  
+        echo json_encode(["Message"=>"Endpoint is none existant"]);
+        http_response_code(403);
         break;
 
     default:
