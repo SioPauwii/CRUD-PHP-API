@@ -24,6 +24,8 @@ class Crud_model{
                 $data =  $stmt->fetchAll();
                 if ($stmt->rowCount() > 0){
                     return $data;
+                }else{
+                    return 'There are no data present';
                 }
             }
         }
@@ -40,6 +42,8 @@ class Crud_model{
                 $data =  $stmt->fetchAll();
                 if ($stmt->rowCount() > 0){
                     return $data;
+                }else{
+                    return 'User does not exist';
                 }
             }
         }
