@@ -25,6 +25,7 @@ class Crud_model{
                 if ($stmt->rowCount() > 0){
                     return $data;
                 }else{
+                    http_response_code(404);
                     return 'There are no data present';
                 }
             }
@@ -43,6 +44,7 @@ class Crud_model{
                 if ($stmt->rowCount() > 0){
                     return $data;
                 }else{
+                    http_response_code(404);
                     return 'User does not exist';
                 }
             }
@@ -66,9 +68,11 @@ class Crud_model{
         try{
             $stmt = $this->pdo->prepare($sql);
             if ($stmt->execute([$data->FirstName, $data->LastName])){
-                return 'Data Successfully Inserted';
+                $lastID = $this->pdo->lastInsertId();
+                echo json_encode(["msg"=>"Data successfully inserted"]);
+                return $this->getOne((object)['User_ID'=>$lastID]);
             }else{
-                return 'Data Unsuccessfully Inserted';
+                echo json_encode(["msg"=>"Data unsuccessfully inserted"]);
             }
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -81,9 +85,13 @@ class Crud_model{
         try {
             $stmt = $this->pdo->prepare($sql);
             if ($stmt->execute([$data->User_ID])) {
-                return "Data Successfully Updated";
-            } else {
-                return "Data Unsuccessfully Updated";
+                if ($stmt->rowCount() > 0){
+                    echo json_encode(["message"=>"Data successfully updated"]);
+                    return $this->getOne((object)['User_ID' => $data->User_ID]);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["message"=>"Id or User does not exist"]);
+                }
             }
         } catch (PDOException $e) {
             return $e->getMessage();  
@@ -96,9 +104,12 @@ class Crud_model{
         try {
             $stmt = $this->pdo->prepare($sql);
             if ($stmt->execute([$data->User_ID])) {
-                return "User successfully deleted.";
-            } else {
-                return "Failed to delete user.";
+                if ($stmt->rowCount() > 0){
+                echo json_encode(["message"=>"User successfully deleted"]);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["message"=>"User doesn't exist or is already deleted"]);
+                }
             }
         } catch (PDOException $e) {
             return $e->getMessage();
