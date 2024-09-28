@@ -9,7 +9,7 @@ date_default_timezone_set("Asia/Manila");
 set_time_limit(1000);
 
 $root = $_SERVER['DOCUMENT_ROOT'];
-$api = $root .'/PHP_API_CRUD';
+$api = $root .'/CRUD-PHP-API';
 
 require_once($api . '/configs/connection.php');
 
@@ -21,6 +21,8 @@ $pdo = $dbase->connect();
 
 $crud = new Crud_model($pdo);
 
+$data = json_decode(file_get_contents("php://input"));
+
 $req = [];
 
 if(isset($_REQUEST['request']))
@@ -29,16 +31,26 @@ else $req = array('errorcatcher');
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-            if($req[0]=='All'){echo json_encode($crud->getAll()); return;}
-            #if($req[0]== 'One'){echo json_encode($crud->getOne()); return;}
+            if($req[0]=='Get'){
+                if($req[1]=='All'){echo json_encode($crud->getAll()); return;}
+                if($req[1]== 'One'){echo json_encode($crud->getOne($data)); return;}
+            }
         break;
+
     case 'POST':
-        $data_input = json_decode(file_get_contents("php://input"));
-        #if($req[0] == 'insert'){echo json_encode($crud->insert($data_input)); return;}
+        if($req[0] == 'Insert'){echo json_encode($crud->insert($data)); return;}
+        break;
+
+    case 'PUT':
+        if($req[0]== 'Update'){echo json_encode($crud->update($data)); return;}
+        break;
+
+    case 'DELETE':
+        if($req[0]== 'Remove'){echo json_encode($crud->delete($data)); return;}  
         break;
 
     default:
-        echo "albert";
+        echo "Invalid HTTP Request";
         http_response_code(403);
         break;
 }
